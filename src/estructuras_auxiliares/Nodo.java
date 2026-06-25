@@ -3,7 +3,7 @@ package estructuras_auxiliares;
 public class Nodo<T> {
     private T data;
     private Nodo<T> next;
-    public Nodo(T data,Nodo<T>next){
+    public Nodo(T data){
         this.data=data;
         this.next=null;
     }
