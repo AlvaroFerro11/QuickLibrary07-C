@@ -7,4 +7,5 @@ public class Libro implements Comparable<Libro>{
     private String category;
     private String yearPubli;
     private String  State;
+
 }
