@@ -119,4 +119,16 @@ public class GestorBiblioteca {
         libroEncontrado.setEstado("DISPONIBLE");
         System.out.println("Confirmacion: El libro ahora esta Disponible.");
     }
+    // Muestra el reporte basico de totales de la biblioteca
+    public void generarReporteTotales() {
+        System.out.println("=============================================");
+        System.out.println("      REPORTE DE TOTALES DE LA BIBLIOTECA    ");
+        System.out.println("=============================================");
+
+        // Obtiene los totales desde el arbol y la cola de solicitudes
+        System.out.println("Cantidad total de libros     : " + arbolLibros.contar());
+        System.out.println("Solicitudes pendientes en cola: " + colaSolicitudes.size());
+
+        System.out.println("=============================================");
+    }
 }
