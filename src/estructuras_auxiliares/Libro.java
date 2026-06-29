@@ -1,14 +1,17 @@
 package estructuras_auxiliares;
 
-public class Libro implements Comparable<Libro>{
-    private int code;
-    private String title;
-    private String author;
-    private String category;
-    private String yearPubli;
-    private String  State;
-    }
-    public Libro(int codigo, String titulo, String autor, String categoria, int anioPublicacion, Estado estado) {
+public class Libro implements Comparable<Libro> {
+
+    private int codigo;
+    private String titulo;
+    private String autor;
+    private String categoria;
+    private int anioPublicacion;
+    private String estado;
+
+    public Libro(int codigo, String titulo, String autor,
+                 String categoria, int anioPublicacion, String estado) {
+
         this.codigo = codigo;
         this.titulo = titulo;
         this.autor = autor;
@@ -16,6 +19,7 @@ public class Libro implements Comparable<Libro>{
         this.anioPublicacion = anioPublicacion;
         this.estado = estado;
     }
+
     public int getCodigo() {
         return codigo;
     }
@@ -36,9 +40,10 @@ public class Libro implements Comparable<Libro>{
         return anioPublicacion;
     }
 
-    public Estado getEstado() {
+    public String getEstado() {
         return estado;
     }
+
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
@@ -55,13 +60,15 @@ public class Libro implements Comparable<Libro>{
         this.anioPublicacion = anioPublicacion;
     }
 
-    public void setEstado(Estado estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
+
     @Override
     public int compareTo(Libro otroLibro) {
-        return this.codigo - otroLibro.codigo;
+        return Integer.compare(this.codigo, otroLibro.codigo);
     }
+
     @Override
     public String toString() {
         return "Código: " + codigo +
@@ -71,3 +78,4 @@ public class Libro implements Comparable<Libro>{
                 " | Año: " + anioPublicacion +
                 " | Estado: " + estado;
     }
+}
