@@ -62,3 +62,12 @@ public class Libro implements Comparable<Libro>{
     public int compareTo(Libro otroLibro) {
         return this.codigo - otroLibro.codigo;
     }
+    @Override
+    public String toString() {
+        return "Código: " + codigo +
+                " | Título: " + titulo +
+                " | Autor: " + autor +
+                " | Categoría: " + categoria +
+                " | Año: " + anioPublicacion +
+                " | Estado: " + estado;
+    }
