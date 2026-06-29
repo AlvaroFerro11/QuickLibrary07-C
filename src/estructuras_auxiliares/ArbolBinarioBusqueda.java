@@ -35,4 +35,33 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> {
         return nodo;
     }
 
+    public T buscar(T data) {
+        NodoArbol<T> resultado = buscarRec(root, data);
+
+        if (resultado == null) {
+            return null;
+        }
+
+        return resultado.getData();
+    }
+
+    private NodoArbol<T> buscarRec(NodoArbol<T> nodo, T data) {
+
+        if (nodo == null) {
+            return null;
+        }
+
+        int comparacion = data.compareTo(nodo.getData());
+
+        if (comparacion == 0) {
+            return nodo;
+        }
+
+        if (comparacion < 0) {
+            return buscarRec(nodo.getLeft(), data);
+        }
+
+        return buscarRec(nodo.getRight(), data);
+    }
+
 }

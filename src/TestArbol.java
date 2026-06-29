@@ -16,6 +16,14 @@ public class TestArbol {
 
         arbol.insertar(30);
 
+        System.out.println("Buscar 40:");
+        System.out.println(arbol.buscar(40));
+
+        System.out.println();
+
+        System.out.println("Buscar 100:");
+        System.out.println(arbol.buscar(100));
+
     }
 
 }
