@@ -437,3 +437,131 @@ public class VentanaBiblioteca extends JFrame {
         resultado.append("Resultado: La prueba funcional integrada finalizó correctamente.");
         mostrarResultado(resultado.toString());
     }
+    private Solicitud crearSolicitud(final int codigoLibro) {
+        return new Solicitud() {
+            @Override
+            public int getCodigoLibro() {
+                return codigoLibro;
+            }
+        };
+    }
+
+    private int leerEnteroPositivo(String texto, String nombreCampo) {
+        int numero = convertirEntero(texto, nombreCampo);
+
+        if (numero <= 0) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " debe ser mayor que cero.");
+        }
+
+        return numero;
+    }
+
+    private int leerEnteroEnRango(String texto, String nombreCampo, int minimo, int maximo) {
+        int numero = convertirEntero(texto, nombreCampo);
+
+        if (numero < minimo || numero > maximo) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " debe estar entre " + minimo + " y " + maximo + ".");
+        }
+
+        return numero;
+    }
+
+    private int convertirEntero(String texto, String nombreCampo) {
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " no puede estar vacío.");
+        }
+
+        try {
+            return Integer.parseInt(texto.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " debe ser un número entero válido.");
+        }
+    }
+
+    private String leerTextoObligatorio(String texto, String nombreCampo) {
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " no puede estar vacío.");
+        }
+
+        return texto.trim();
+    }
+
+    private String capturarSalida(Runnable accion) {
+        PrintStream salidaOriginal = System.out;
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        PrintStream nuevaSalida = new PrintStream(buffer);
+
+        try {
+            System.setOut(nuevaSalida);
+            accion.run();
+        } finally {
+            System.out.flush();
+            System.setOut(salidaOriginal);
+        }
+
+        return buffer.toString();
+    }
+
+    private void limpiarFormularioLibro() {
+        txtCodigo.setText("");
+        txtTitulo.setText("");
+        txtAutor.setText("");
+        txtCategoria.setText("");
+        txtAnio.setText("");
+        cboEstado.setSelectedIndex(0);
+        txtCodigo.requestFocus();
+    }
+
+    private void mostrarResultado(String mensaje) {
+        areaResultados.setText(mensaje);
+        areaResultados.setCaretPosition(0);
+    }
+
+    private void mostrarMensajeError(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, "Validación", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void mostrarManualEnResultados() {
+        mostrarResultado(obtenerTextoManual());
+    }
+
+    private String obtenerTextoManual() {
+        return "MANUAL DE USUARIO\n" +
+                separador() +
+                "1. Registrar libro:\n" +
+                "   Permite ingresar código, título, autor, categoría, año y estado.\n\n" +
+                "2. Buscar libro:\n" +
+                "   Permite consultar un libro mediante su código.\n\n" +
+                "3. Eliminar libro:\n" +
+                "   Permite eliminar un libro existente luego de confirmar la operación.\n\n" +
+                "4. Mostrar libros:\n" +
+                "   Muestra todos los libros almacenados en el árbol binario de búsqueda.\n\n" +
+                "5. Registrar solicitud de préstamo:\n" +
+                "   Agrega una solicitud a la cola, siempre que el libro exista.\n\n" +
+                "6. Atender solicitud:\n" +
+                "   Procesa la primera solicitud pendiente y cambia el estado del libro a PRESTADO.\n\n" +
+                "7. Registrar devolución:\n" +
+                "   Cambia el estado del libro a DISPONIBLE.\n\n" +
+                "8. Generar reporte:\n" +
+                "   Muestra el total de libros y las solicitudes pendientes.\n\n" +
+                "9. Prueba funcional integrada:\n" +
+                "   Ejecuta un flujo completo: carga libros, registra solicitud, atiende préstamo, devuelve libro y genera reporte.\n";
+    }
+
+    private String separador() {
+        return "=============================================\n";
+    }
+
+    private void salirDelSistema() {
+        int respuesta = JOptionPane.showConfirmDialog(
+                this,
+                "¿Deseas salir del sistema?",
+                "Confirmar salida",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            dispose();
+        }
+    }
+}
