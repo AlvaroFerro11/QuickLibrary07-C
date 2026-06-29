@@ -68,6 +68,10 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> {
         return buscarRec(nodo.getRight(), data);
     }
 
+    public boolean contiene(T data){
+        return buscar(data) != null;
+    }
+
     //contar
 
     public int contar() {

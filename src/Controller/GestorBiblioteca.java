@@ -19,12 +19,20 @@ public class GestorBiblioteca {
         return arbolLibros.buscar(libro);
     }
 
+    public void eliminarLibro(Libro libro) {
+        arbolLibros.eliminar(libro);
+    }
+
     public void mostrarLibros() {
         arbolLibros.inorden();
     }
 
     public int totalLibros() {
         return arbolLibros.contar();
+    }
+
+    public boolean arbolVacio() {
+        return arbolLibros.estaVacio();
     }
 
 }

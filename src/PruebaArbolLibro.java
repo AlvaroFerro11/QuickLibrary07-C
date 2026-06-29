@@ -36,18 +36,17 @@ public class PruebaArbolLibro {
 
         gestor.mostrarLibros();
 
-            Libro buscado =
-            gestor.buscarLibro(
-                    new Libro(
-                            102,
-                            "",
-                            "",
-                            "",
-                            0,
-                            ""
-                    ));
-
-    System.out.println(buscado);
+        Libro buscado = gestor.buscarLibro(
+            new Libro(
+                102,
+                "",
+                "",
+                "",
+                0,
+                ""
+            ));
+            
+        System.out.println(buscado);
 
     }
 

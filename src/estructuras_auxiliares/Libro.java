@@ -20,6 +20,10 @@ public class Libro implements Comparable<Libro> {
         this.estado = estado;
     }
 
+    public Libro(int codigo) {
+        this.codigo = codigo;
+    }
+
     public int getCodigo() {
         return codigo;
     }
