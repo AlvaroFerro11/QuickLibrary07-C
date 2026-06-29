@@ -39,3 +39,22 @@ public class Libro implements Comparable<Libro>{
     public Estado getEstado() {
         return estado;
     }
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setAnioPublicacion(int anioPublicacion) {
+        this.anioPublicacion = anioPublicacion;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
