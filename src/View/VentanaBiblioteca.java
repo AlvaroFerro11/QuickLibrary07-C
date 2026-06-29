@@ -80,4 +80,3 @@ public class VentanaBiblioteca extends JFrame {
         barra.add(menuAyuda);
 
         return barra;
-    }
