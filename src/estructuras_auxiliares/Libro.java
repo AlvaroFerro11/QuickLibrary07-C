@@ -58,3 +58,7 @@ public class Libro implements Comparable<Libro>{
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
+    @Override
+    public int compareTo(Libro otroLibro) {
+        return this.codigo - otroLibro.codigo;
+    }
