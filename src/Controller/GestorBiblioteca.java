@@ -97,4 +97,26 @@ public class GestorBiblioteca {
             System.out.println(e.getMessage());
         }
     }
+    // Registra la devolucion de un libro cambiando su estado a disponible
+    public void registrarDevolucion(int codigoLibro) {
+        // Validacion de datos de entrada incorrectos
+        if (codigoLibro <= 0) {
+            System.out.println("Error: Codigo de libro invalido.");
+            return;
+        }
+
+        // Crea un objeto libro auxiliar para buscarlo en el arbol por su codigo
+        Libro libroAuxiliar = new Libro(codigoLibro);
+        Libro libroEncontrado = arbolLibros.buscar(libroAuxiliar);
+
+        // Verifica si el libro existe en el arbol
+        if (libroEncontrado == null) {
+            System.out.println("Error: El libro con codigo " + codigoLibro + " no existe.");
+            return;
+        }
+
+        // Cambia el estado del libro a disponible usando texto
+        libroEncontrado.setEstado("DISPONIBLE");
+        System.out.println("Confirmacion: El libro ahora esta Disponible.");
+    }
 }
