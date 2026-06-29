@@ -82,4 +82,23 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> {
         return 1 + contarRec(nodo.getLeft()) + contarRec(nodo.getRight());
     }
 
+    //inorden
+
+    public void inorden() {
+        inordenRec(root);
+    }
+
+    private void inordenRec(NodoArbol<T> nodo) {
+
+        if (nodo != null) {
+
+            inordenRec(nodo.getLeft());
+
+            System.out.println(nodo.getData());
+
+            inordenRec(nodo.getRight());
+
+        }
+    }
+
 }
