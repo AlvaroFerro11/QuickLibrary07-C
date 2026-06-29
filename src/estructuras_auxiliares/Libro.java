@@ -16,5 +16,26 @@ public class Libro implements Comparable<Libro>{
         this.anioPublicacion = anioPublicacion;
         this.estado = estado;
     }
+    public int getCodigo() {
+        return codigo;
+    }
 
-}
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public int getAnioPublicacion() {
+        return anioPublicacion;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
