@@ -101,4 +101,58 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> {
         }
     }
 
+    //eliminar
+
+    public void eliminar(T data) {
+        root = eliminarRec(root, data);
+    }
+
+    private NodoArbol<T> eliminarRec(NodoArbol<T> nodo, T data) {
+
+        if (nodo == null) {
+            return null;
+        }
+
+        int comparacion = data.compareTo(nodo.getData());
+
+        if (comparacion < 0) {
+
+            nodo.setLeft(eliminarRec(nodo.getLeft(), data));
+
+        } else if (comparacion > 0) {
+
+            nodo.setRight(eliminarRec(nodo.getRight(), data));
+
+        } else {
+
+            // Caso 1: sin hijo izquierdo
+            if (nodo.getLeft() == null) {
+                return nodo.getRight();
+            }
+
+            // Caso 2: sin hijo derecho
+            if (nodo.getRight() == null) {
+                return nodo.getLeft();
+            }
+
+            // Caso 3: dos hijos
+            NodoArbol<T> sucesor = obtenerMenor(nodo.getRight());
+
+            nodo.setData(sucesor.getData());
+
+            nodo.setRight(eliminarRec(nodo.getRight(), sucesor.getData()));
+        }
+
+        return nodo;
+    }
+
+    private NodoArbol<T> obtenerMenor(NodoArbol<T> nodo) {
+
+        while (nodo.getLeft() != null) {
+            nodo = nodo.getLeft();
+        }
+
+        return nodo;
+    }
+
 }

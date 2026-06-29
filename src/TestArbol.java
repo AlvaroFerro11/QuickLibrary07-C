@@ -14,22 +14,15 @@ public class TestArbol {
         arbol.insertar(60);
         arbol.insertar(80);
 
-        System.out.println("Buscar 40:");
-        System.out.println(arbol.buscar(40));
+        System.out.println("ANTES");
+
+        arbol.inorden();
 
         System.out.println();
 
-        System.out.println("Buscar 100:");
-        System.out.println(arbol.buscar(100));
+        arbol.eliminar(30);
 
-        System.out.println();
-
-        System.out.println("Cantidad de nodos:");
-        System.out.println(arbol.contar());
-
-        System.out.println();
-
-        System.out.println("Recorrido Inorden:");
+        System.out.println("DESPUES");
 
         arbol.inorden();
 
