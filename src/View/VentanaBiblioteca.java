@@ -246,3 +246,194 @@ public class VentanaBiblioteca extends JFrame {
 
         return panel;
     }
+
+    private void agregarCampo(JPanel panel, GridBagConstraints gbc, int fila, String etiqueta, JComponent campo) {
+        gbc.gridx = 0;
+        gbc.gridy = fila;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0;
+        panel.add(new JLabel(etiqueta), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = fila;
+        gbc.weightx = 1;
+        panel.add(campo, gbc);
+    }
+
+    private void registrarLibro() {
+        try {
+            int codigo = leerEnteroPositivo(txtCodigo.getText(), "código");
+            String titulo = leerTextoObligatorio(txtTitulo.getText(), "título");
+            String autor = leerTextoObligatorio(txtAutor.getText(), "autor");
+            String categoria = leerTextoObligatorio(txtCategoria.getText(), "categoría");
+            int anio = leerEnteroEnRango(txtAnio.getText(), "año", 1, 2100);
+            String estado = cboEstado.getSelectedItem().toString();
+
+            Libro libroExistente = gestor.buscarLibro(new Libro(codigo));
+            if (libroExistente != null) {
+                mostrarMensajeError("Ya existe un libro registrado con ese código.");
+                return;
+            }
+
+            Libro nuevoLibro = new Libro(codigo, titulo, autor, categoria, anio, estado);
+            gestor.registrarLibro(nuevoLibro);
+
+            mostrarResultado("Libro registrado correctamente:\n" + nuevoLibro);
+            limpiarFormularioLibro();
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensajeError(e.getMessage());
+        }
+    }
+
+    private void buscarLibro() {
+        try {
+            int codigo = leerEnteroPositivo(txtCodigoBuscar.getText(), "código de búsqueda");
+            Libro libroEncontrado = gestor.buscarLibro(new Libro(codigo));
+
+            if (libroEncontrado == null) {
+                mostrarResultado("No se encontró ningún libro con el código " + codigo + ".");
+            } else {
+                mostrarResultado("Libro encontrado:\n" + libroEncontrado);
+            }
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensajeError(e.getMessage());
+        }
+    }
+
+    private void eliminarLibro() {
+        try {
+            int codigo = leerEnteroPositivo(txtCodigoEliminar.getText(), "código de eliminación");
+            Libro libroEncontrado = gestor.buscarLibro(new Libro(codigo));
+
+            if (libroEncontrado == null) {
+                mostrarResultado("No existe un libro con el código " + codigo + ".");
+                return;
+            }
+
+            int respuesta = JOptionPane.showConfirmDialog(
+                    this,
+                    "¿Deseas eliminar este libro?\n\n" + libroEncontrado,
+                    "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (respuesta == JOptionPane.YES_OPTION) {
+                gestor.eliminarLibro(new Libro(codigo));
+                mostrarResultado("Libro eliminado correctamente.\nCódigo eliminado: " + codigo);
+                txtCodigoEliminar.setText("");
+            } else {
+                mostrarResultado("Operación cancelada por el usuario.");
+            }
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensajeError(e.getMessage());
+        }
+    }
+
+    private void mostrarLibros() {
+        if (gestor.arbolVacio()) {
+            mostrarResultado("No hay libros registrados.");
+            return;
+        }
+
+        String salida = capturarSalida(() -> gestor.mostrarLibros());
+        mostrarResultado("LISTA DE LIBROS\n" + separador() + salida);
+    }
+
+    private void registrarSolicitud() {
+        try {
+            int codigo = leerEnteroPositivo(txtCodigoSolicitud.getText(), "código del libro solicitado");
+            Libro libroEncontrado = gestor.buscarLibro(new Libro(codigo));
+
+            if (libroEncontrado == null) {
+                mostrarResultado("No se puede registrar la solicitud porque el libro no existe.");
+                return;
+            }
+
+            Solicitud solicitud = crearSolicitud(codigo);
+            gestor.registrarSolicitud(solicitud);
+
+            mostrarResultado("Solicitud registrada correctamente en la cola.\nLibro solicitado: " + libroEncontrado);
+            txtCodigoSolicitud.setText("");
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensajeError(e.getMessage());
+        }
+    }
+
+    private void atenderSolicitud() {
+        String salida = capturarSalida(() -> gestor.atenderSiguienteSolicitud());
+        mostrarResultado("ATENCIÓN DE SOLICITUD\n" + separador() + salida);
+    }
+
+    private void registrarDevolucion() {
+        try {
+            int codigo = leerEnteroPositivo(txtCodigoDevolucion.getText(), "código del libro devuelto");
+            String salida = capturarSalida(() -> gestor.registrarDevolucion(codigo));
+            mostrarResultado("DEVOLUCIÓN DE LIBRO\n" + separador() + salida);
+            txtCodigoDevolucion.setText("");
+
+        } catch (IllegalArgumentException e) {
+            mostrarMensajeError(e.getMessage());
+        }
+    }
+
+    private void generarReporte() {
+        String salida = capturarSalida(() -> gestor.generarReporteTotales());
+        mostrarResultado(salida);
+    }
+
+    private void cargarDatosDePrueba() {
+        registrarLibroSiNoExiste(new Libro(101, "Programación en Java", "Herbert Schildt", "Programación", 2022, "DISPONIBLE"));
+        registrarLibroSiNoExiste(new Libro(102, "Estructuras de Datos", "Mark Allen Weiss", "Computación", 2021, "DISPONIBLE"));
+        registrarLibroSiNoExiste(new Libro(103, "Introducción a los Algoritmos", "Thomas Cormen", "Algoritmos", 2020, "DISPONIBLE"));
+
+        mostrarResultado("Datos de prueba cargados correctamente.\nSe agregaron libros base con códigos 101, 102 y 103.");
+    }
+
+    private void registrarLibroSiNoExiste(Libro libro) {
+        if (gestor.buscarLibro(new Libro(libro.getCodigo())) == null) {
+            gestor.registrarLibro(libro);
+        }
+    }
+
+    private void ejecutarPruebaFuncionalIntegrada() {
+        StringBuilder resultado = new StringBuilder();
+        resultado.append("PRUEBA FUNCIONAL INTEGRADA\n");
+        resultado.append(separador());
+
+        resultado.append("Paso 1: Cargar datos de prueba.\n");
+        registrarLibroSiNoExiste(new Libro(101, "Programación en Java", "Herbert Schildt", "Programación", 2022, "DISPONIBLE"));
+        registrarLibroSiNoExiste(new Libro(102, "Estructuras de Datos", "Mark Allen Weiss", "Computación", 2021, "DISPONIBLE"));
+        registrarLibroSiNoExiste(new Libro(103, "Introducción a los Algoritmos", "Thomas Cormen", "Algoritmos", 2020, "DISPONIBLE"));
+        resultado.append("Datos cargados correctamente.\n\n");
+
+        resultado.append("Paso 2: Mostrar libros registrados.\n");
+        resultado.append(capturarSalida(() -> gestor.mostrarLibros())).append("\n");
+
+        resultado.append("Paso 3: Registrar solicitud para el libro 101.\n");
+        gestor.registrarSolicitud(crearSolicitud(101));
+        resultado.append("Solicitud registrada correctamente.\n\n");
+
+        resultado.append("Paso 4: Atender la siguiente solicitud.\n");
+        resultado.append(capturarSalida(() -> gestor.atenderSiguienteSolicitud())).append("\n");
+
+        resultado.append("Paso 5: Verificar estado del libro 101.\n");
+        Libro libroPrestado = gestor.buscarLibro(new Libro(101));
+        resultado.append(libroPrestado != null ? libroPrestado : "No se encontró el libro 101.").append("\n\n");
+
+        resultado.append("Paso 6: Registrar devolución del libro 101.\n");
+        resultado.append(capturarSalida(() -> gestor.registrarDevolucion(101))).append("\n");
+
+        resultado.append("Paso 7: Verificar estado final del libro 101.\n");
+        Libro libroDevuelto = gestor.buscarLibro(new Libro(101));
+        resultado.append(libroDevuelto != null ? libroDevuelto : "No se encontró el libro 101.").append("\n\n");
+
+        resultado.append("Paso 8: Generar reporte final.\n");
+        resultado.append(capturarSalida(() -> gestor.generarReporteTotales())).append("\n");
+
+        resultado.append("Resultado: La prueba funcional integrada finalizó correctamente.");
+        mostrarResultado(resultado.toString());
+    }
