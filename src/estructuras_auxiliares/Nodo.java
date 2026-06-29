@@ -1,22 +1,28 @@
 package estructuras_auxiliares;
 
-public class Nodo<T> {
-    private T data;
-    private Nodo<T> next;
-    public Nodo(T data){
-        this.data=data;
-        this.next=null;
+public class Nodo<E> {
+
+    private E data;
+    private Nodo<E> next;
+
+    public Nodo(E data) {
+        this.data = data;
+        this.next = null;
     }
-    public T getData() {
+
+    public E getData() {
         return data;
     }
-    public void setData(T data) {
+
+    public void setData(E data) {
         this.data = data;
     }
-    public void setNext(Nodo<T> next) {
-        this.next = next;
-    }
-    public Nodo<T> getNext() {
+
+    public Nodo<E> getNext() {
         return next;
+    }
+
+    public void setNext(Nodo<E> next) {
+        this.next = next;
     }
 }
