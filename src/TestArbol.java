@@ -24,6 +24,10 @@ public class TestArbol {
         System.out.println("Buscar 100:");
         System.out.println(arbol.buscar(100));
 
+        System.out.println("Cantidad de nodos:");
+        System.out.println(arbol.contar());
+
+
     }
 
 }

@@ -12,6 +12,8 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> {
         return root == null;
     }
 
+    //insertar
+
     public void insertar(T data) {
         root = insertarRec(root, data);
     }
@@ -34,6 +36,8 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> {
 
         return nodo;
     }
+
+    //buscar
 
     public T buscar(T data) {
         NodoArbol<T> resultado = buscarRec(root, data);
@@ -62,6 +66,20 @@ public class ArbolBinarioBusqueda<T extends Comparable<T>> {
         }
 
         return buscarRec(nodo.getRight(), data);
+    }
+
+    //contar
+
+    public int contar() {
+        return contarRec(root);
+    }
+
+    private int contarRec(NodoArbol<T> nodo) {
+
+        if (nodo == null) {
+            return 0;
+        }
+        return 1 + contarRec(nodo.getLeft()) + contarRec(nodo.getRight());
     }
 
 }
