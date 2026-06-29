@@ -57,4 +57,3 @@ public class Menu_consola {
             break;
         default:
             System.out.println("Opcion no valida.");
-    }
