@@ -242,6 +242,12 @@ public class GestorBiblioteca {
             System.out.println("Error al procesar prestamo: " + e.getMessage());
         }
     }
+    public void registrarDevolucion(int codigoLibro) {
+        if (codigoLibro <= 0) {
+            System.out.println("Error: Codigo de libro invalido.");
+            return;
+        }
+
     // Busca un libro en el arbol binario de busqueda
     public Libro buscarLibro(Libro libro) {
         return arbolLibros.buscar(libro);
