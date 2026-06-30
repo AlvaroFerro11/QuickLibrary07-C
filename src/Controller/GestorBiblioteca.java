@@ -104,6 +104,10 @@ public class GestorBiblioteca {
             filtrarPorEstadoRec(nodo.getRight(), estadoBuscado);
         }
     }
+    public Libro buscarLibroPorCodigo(int codigo) {
+        Libro auxiliar = new Libro(codigo);
+        return arbolLibros.buscar(auxiliar);
+    }
     // Muestra todos los libros guardados sin distincion
     public void mostrarTodosLosLibros() {
         arbolLibros.inorden();
