@@ -248,6 +248,17 @@ public class GestorBiblioteca {
             return;
         }
 
+        Libro libroAuxiliar = new Libro(codigoLibro);
+        Libro libroEncontrado = arbolLibros.buscar(libroAuxiliar);
+
+        if (libroEncontrado == null) {
+            System.out.println("Error: El libro con codigo " + codigoLibro + " no existe.");
+            return;
+        }
+
+        libroEncontrado.setEstado("DISPONIBLE");
+        System.out.println("Confirmacion: El libro ahora esta Disponible.");
+    }
     // Busca un libro en el arbol binario de busqueda
     public Libro buscarLibro(Libro libro) {
         return arbolLibros.buscar(libro);
@@ -276,12 +287,6 @@ public class GestorBiblioteca {
     // Procesa la solicitud al frente de la cola y realiza el prestamo si el libro esta disponible
 
     // Registra la devolucion de un libro cambiando su estado a disponible
-    public void registrarDevolucion(int codigoLibro) {
-        // Validacion de datos de entrada incorrectos
-        if (codigoLibro <= 0) {
-            System.out.println("Error: Codigo de libro invalido.");
-            return;
-        }
         // Crea un objeto libro auxiliar para buscarlo en el arbol por su codigo
         Libro libroAuxiliar = new Libro(codigoLibro);
         Libro libroEncontrado = arbolLibros.buscar(libroAuxiliar);
