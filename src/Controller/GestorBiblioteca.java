@@ -1,7 +1,7 @@
 package Controller;
 
 import estructuras_auxiliares.ArbolBinarioBusqueda;
-import estructuras_auxiliares.Libro;
+import Model.Libro;
 import estructuras_auxiliares.QueueLink;
 import Model.Solicitud;
 

@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import Controller.GestorBiblioteca;
 import Model.Solicitud;
-import estructuras_auxiliares.Libro;
+import Model.Libro;
 
 public class Menu_consola {
 

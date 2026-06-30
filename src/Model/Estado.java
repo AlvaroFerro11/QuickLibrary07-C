@@ -1,4 +1,4 @@
-package estructuras_auxiliares;
+package Model;
 
 public enum Estado {
     DISPONIBLE,

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeneradorPDF {
-
     private static final int ANCHO_PAGINA = 595;
     private static final int ALTO_PAGINA = 842;
     private static final int MARGEN_IZQUIERDO = 50;
@@ -18,15 +17,12 @@ public class GeneradorPDF {
     private static final int TAMANIO_FUENTE = 11;
     private static final int INTERLINEADO = 15;
     private static final int MAX_CARACTERES_LINEA = 86;
-
     private GeneradorPDF() {
     }
-
     public static void crearReporteTexto(String titulo, String contenido, File destino) throws IOException {
         if (destino == null) {
             throw new IOException("No se seleccionó un archivo de destino.");
         }
-
         List<String> lineas = prepararLineas(titulo, contenido);
         List<List<String>> paginas = dividirEnPaginas(lineas);
         escribirPDF(paginas, destino);

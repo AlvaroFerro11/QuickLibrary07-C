@@ -1,5 +1,5 @@
 import Controller.GestorBiblioteca;
-import estructuras_auxiliares.Libro;
+import Model.Libro;
 
 public class PruebaArbolLibro {
 

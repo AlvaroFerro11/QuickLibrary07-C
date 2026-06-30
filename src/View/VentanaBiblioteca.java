@@ -2,7 +2,7 @@ package View;
 
 import Controller.GestorBiblioteca;
 import Model.Solicitud;
-import estructuras_auxiliares.Libro;
+import Model.Libro;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

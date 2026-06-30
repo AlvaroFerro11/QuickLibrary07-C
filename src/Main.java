@@ -1,4 +1,4 @@
-package View;
+import View.VentanaBiblioteca;
 
 import javax.swing.SwingUtilities;
 
