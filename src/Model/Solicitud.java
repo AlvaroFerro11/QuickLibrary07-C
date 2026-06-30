@@ -8,7 +8,7 @@ public class Solicitud {
     private int codigoLibro;
     private LocalDate fechaSolicitud;
 
-    private Solicitud(int codEst,String nomEst,int codigoLibro,LocalDate fechaSolicitud){
+    public Solicitud(int codEst,String nomEst,int codigoLibro,LocalDate fechaSolicitud){
         this.codEst= codEst;
         this.nomEst = nomEst;
         this.codigoLibro = codigoLibro;
