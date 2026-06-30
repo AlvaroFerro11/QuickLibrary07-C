@@ -209,11 +209,39 @@ public class GestorBiblioteca {
             System.out.println("Error: " + e.getMessage());
         }
     }
+    // Atiende el frente de la cola y efectua el prestamo si el libro esta disponible
+    public void atenderSiguienteSolicitud() {
+        try {
+            if (colaSolicitudes.isEmpty()) {
+                System.out.println("Error: No hay solicitudes pendientes en la cola.");
+                return;
+            }
+            Solicitud solicitudActual = colaSolicitudes.peek();
+            int codigoBuscado = solicitudActual.getCodigoLibro();
+            System.out.println("Procesando solicitud de libro codigo: " + codigoBuscado);
+            Libro libroAuxiliar = new Libro(codigoBuscado);
+            Libro libroEncontrado = arbolLibros.buscar(libroAuxiliar);
+            // Validacion de existencia
+            if (libroEncontrado == null) {
+                System.out.println("Error: El libro con codigo " + codigoBuscado + " no existe.");
+                colaSolicitudes.dequeue();
+                return;
+            }
+            // Validacion de disponibilidad
+            if (libroEncontrado.getEstado().equalsIgnoreCase("PRESTADO")) {
+                System.out.println("Rechazado: El libro ya se encuentra prestado.");
+                colaSolicitudes.dequeue();
+                return;
+            }
+            // Cambio de estado a prestado
+            libroEncontrado.setEstado("PRESTADO");
+            colaSolicitudes.dequeue();
+            System.out.println("Prestamo realizado con exito.");
 
-    // ==========================================================
-    // OTROS MÉTODOS DEL SISTEMA
-    // ==========================================================
-
+        } catch (ExceptionIsEmpty e) {
+            System.out.println("Error al procesar prestamo: " + e.getMessage());
+        }
+    }
     // Busca un libro en el arbol binario de busqueda
     public Libro buscarLibro(Libro libro) {
         return arbolLibros.buscar(libro);
@@ -240,39 +268,6 @@ public class GestorBiblioteca {
     }
 
     // Procesa la solicitud al frente de la cola y realiza el prestamo si el libro esta disponible
-    public void atenderSiguienteSolicitud() {
-        try {
-            // Verifica si la cola de solicitudes esta vacia
-            if (colaSolicitudes.isEmpty()) {
-                throw new ExceptionIsEmpty("Error: No hay solicitudes pendientes en la cola.");
-            }
-            // Obtiene la solicitud al frente de la cola sin removerla
-            Solicitud solicitudActual = colaSolicitudes.peek();
-            int codigoBuscado = solicitudActual.getCodigoLibro();
-            System.out.println("Procesando solicitud de libro codigo: " + codigoBuscado);
-            // Se usa el constructor que recibe el codigo
-            Libro libroAuxiliar = new Libro(codigoBuscado);
-            Libro libroEncontrado = arbolLibros.buscar(libroAuxiliar);
-            // Verifica si el libro existe en el arbol
-            if (libroEncontrado == null) {
-                System.out.println("Error: El libro con codigo " + codigoBuscado + " no existe.");
-                colaSolicitudes.dequeue();
-                return;
-            }
-            // Verifica si el libro ya se encuentra prestado comparando el texto
-            if (libroEncontrado.getEstado().equalsIgnoreCase("PRESTADO")) {
-                System.out.println("Rechazado: El libro ya se encuentra prestado.");
-                colaSolicitudes.dequeue();
-                return;
-            }
-            // Cambia el estado del libro usando texto y remueve la solicitud de la cola
-            libroEncontrado.setEstado("PRESTADO");
-            colaSolicitudes.dequeue();
-            System.out.println("Prestamo realizado con exito.");
-        } catch (ExceptionIsEmpty e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     // Registra la devolucion de un libro cambiando su estado a disponible
     public void registrarDevolucion(int codigoLibro) {
