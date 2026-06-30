@@ -121,6 +121,10 @@ public class GestorBiblioteca {
             buscarPorTituloRec(nodo.getRight(), titulo);
         }
     }
+    public void buscarPorAutor(String autor) {
+        System.out.println("Resultados para el autor '" + autor + "':");
+        buscarPorAutorRec(arbolLibros.getRoot(), autor);
+    }
 
     // Muestra todos los libros guardados sin distincion
     public void mostrarTodosLosLibros() {
