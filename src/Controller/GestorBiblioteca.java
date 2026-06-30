@@ -4,6 +4,7 @@ import estructuras_auxiliares.ArbolBinarioBusqueda;
 import Model.Libro;
 import estructuras_auxiliares.QueueLink;
 import Model.Solicitud;
+import estructuras_auxiliares.NodoArbol;
 public class GestorBiblioteca {
     // Estructuras de datos para almacenar libros y solicitudes
     private ArbolBinarioBusqueda<Libro> arbolLibros;
@@ -56,6 +57,35 @@ public class GestorBiblioteca {
             return;
         }
         arbolLibros.insertar(libro);
+    }
+    // Modifica los datos de un libro existente en el arbol
+    public void modificarLibro(int codigo, String nuevoTitulo, String nuevoAutor, String nuevaCategoria, int nuevoAnio) {
+        Libro auxiliar = new Libro(codigo);
+        Libro libroEncontrado = arbolLibros.buscar(auxiliar);
+
+        if (libroEncontrado == null) {
+            System.out.println("Error: El libro con codigo " + codigo + " no existe.");
+            return;
+        }
+
+        // Crear clon temporal para validar los nuevos cambios antes de guardarlos
+        Libro clonValidar = new Libro(codigo, nuevoTitulo, nuevoAutor, nuevaCategoria, nuevoAnio, libroEncontrado.getEstado());
+        if (!validarDatosLibro(clonValidar)) {
+            System.out.println("Modificacion cancelada por datos invalidos.");
+            return;
+        }
+
+        // Aplicar los cambios sobre el objeto real encontrado
+        libroEncontrado.setTitulo(nuevoTitulo);
+        libroEncontrado.setAutor(nuevoAutor);
+        libroEncontrado.setCategoria(nuevaCategoria);
+        libroEncontrado.setAnioPublicacion(nuevoAnio);
+        System.out.println("Libro modificado con exito.");
+    }
+
+    // Muestra todos los libros guardados sin distincion
+    public void mostrarTodosLosLibros() {
+        arbolLibros.inorden();
     }
     // Busca un libro en el arbol binario de busqueda
     public Libro buscarLibro(Libro libro) {
