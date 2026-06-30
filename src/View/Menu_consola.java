@@ -1,5 +1,6 @@
 package View;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 import Controller.GestorBiblioteca;
@@ -90,6 +91,7 @@ public class Menu_consola {
         int codigo = leerEnteroPositivo("Codigo del libro: ");
 
         Libro libroExistente = gestor.buscarLibro(new Libro(codigo));
+
         if (libroExistente != null) {
             System.out.println("Error: Ya existe un libro registrado con ese codigo.");
             return;
@@ -100,6 +102,7 @@ public class Menu_consola {
         String categoria = leerTextoObligatorio("Categoria: ");
         int anio = leerEnteroEnRango("Anio de publicacion: ", 1, 2100);
         String estado = leerEstado();
+
         Libro nuevoLibro = new Libro(codigo, titulo, autor, categoria, anio, estado);
         gestor.registrarLibro(nuevoLibro);
 
@@ -136,9 +139,9 @@ public class Menu_consola {
         System.out.println("Libro seleccionado:");
         System.out.println(libroEncontrado);
 
-        String confirmacion = leerTextoObligatorio("Confirma la eliminacion? (S/N): ");
+        boolean confirmacion = leerConfirmacion("Confirma la eliminacion? (S/N): ");
 
-        if (confirmacion.equalsIgnoreCase("S")) {
+        if (confirmacion) {
             gestor.eliminarLibro(new Libro(codigo));
             System.out.println("Confirmacion: Libro eliminado correctamente.");
         } else {
@@ -157,22 +160,30 @@ public class Menu_consola {
 
         gestor.mostrarLibros();
     }
+
     private void registrarSolicitud() {
         System.out.println();
         System.out.println("--- REGISTRAR SOLICITUD DE PRESTAMO ---");
 
-        int codigo = leerEnteroPositivo("Codigo del libro solicitado: ");
-        Libro libroEncontrado = gestor.buscarLibro(new Libro(codigo));
+        int codEst = leerEnteroPositivo("Codigo del estudiante: ");
+        String nomEst = leerTextoObligatorio("Nombre del estudiante: ");
+        int codigoLibro = leerEnteroPositivo("Codigo del libro solicitado: ");
+
+        Libro libroEncontrado = gestor.buscarLibro(new Libro(codigoLibro));
 
         if (libroEncontrado == null) {
             System.out.println("Error: No se puede registrar la solicitud porque el libro no existe.");
             return;
         }
 
-        Solicitud solicitud = crearSolicitud(codigo);
+        Solicitud solicitud = crearSolicitud(codEst, nomEst, codigoLibro);
         gestor.registrarSolicitud(solicitud);
 
         System.out.println("Confirmacion: Solicitud registrada en la cola de espera.");
+        System.out.println("Codigo estudiante: " + solicitud.getCodEst());
+        System.out.println("Nombre estudiante: " + solicitud.getNomEst());
+        System.out.println("Codigo libro: " + solicitud.getCodigoLibro());
+        System.out.println("Fecha solicitud: " + solicitud.getFechaSolicitud());
     }
 
     private void atenderSolicitud() {
@@ -192,6 +203,7 @@ public class Menu_consola {
 
     private void generarReporte() {
         System.out.println();
+        System.out.println("--- REPORTE DE TOTALES ---");
         gestor.generarReporteTotales();
     }
 
@@ -235,13 +247,8 @@ public class Menu_consola {
         }
     }
 
-    private Solicitud crearSolicitud(final int codigoLibro) {
-        return new Solicitud() {
-            @Override
-            public int getCodigoLibro() {
-                return codigoLibro;
-            }
-        };
+    private Solicitud crearSolicitud(int codEst, String nomEst, int codigoLibro) {
+        return new Solicitud(codEst, nomEst, codigoLibro, LocalDate.now());
     }
 
     private int leerEnteroPositivo(String mensaje) {
@@ -301,6 +308,23 @@ public class Menu_consola {
         } while (texto.isEmpty());
 
         return texto;
+    }
+
+    private boolean leerConfirmacion(String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String respuesta = scanner.nextLine().trim();
+
+            if (respuesta.equalsIgnoreCase("S")) {
+                return true;
+            }
+
+            if (respuesta.equalsIgnoreCase("N")) {
+                return false;
+            }
+
+            System.out.println("Error: Debe ingresar S para confirmar o N para cancelar.");
+        }
     }
 
     private String leerEstado() {
