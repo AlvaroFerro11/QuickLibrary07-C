@@ -637,7 +637,12 @@ Como mejoras futuras para el sistema, se podrían considerar las siguientes:
 
 Proyecto desarrollado como trabajo final del curso de **Algoritmos y Estructuras de Datos**.
 
-**Integrante:** [Colocar nombre del estudiante]
+**Cruz Torres Angel Fernando
+Espino Veas Karla Daniela
+Ferro Huanchi Alvaro Jeanpiero
+Montenegro Gonzales Orlando Jose
+Montoya Magallanes Alvaro Fabrizio**
+
 
 ---
 
