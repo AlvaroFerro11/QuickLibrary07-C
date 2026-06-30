@@ -134,6 +134,20 @@ public class GestorBiblioteca {
             buscarPorAutorRec(nodo.getRight(), autor);
         }
     }
+    public void buscarPorCategoria(String categoria) {
+        System.out.println("Resultados para la categoria '" + categoria + "':");
+        buscarPorCategoriaRec(arbolLibros.getRoot(), categoria);
+    }
+
+    private void buscarPorCategoriaRec(NodoArbol<Libro> nodo, String categoria) {
+        if (nodo != null) {
+            buscarPorCategoriaRec(nodo.getLeft(), categoria);
+            if (nodo.getData().getCategoria().equalsIgnoreCase(categoria)) {
+                System.out.println(nodo.getData());
+            }
+            buscarPorCategoriaRec(nodo.getRight(), categoria);
+        }
+    }
 
     // Muestra todos los libros guardados sin distincion
     public void mostrarTodosLosLibros() {
