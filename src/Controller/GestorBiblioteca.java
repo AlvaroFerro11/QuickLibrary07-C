@@ -108,6 +108,10 @@ public class GestorBiblioteca {
         Libro auxiliar = new Libro(codigo);
         return arbolLibros.buscar(auxiliar);
     }
+    public void buscarPorTitulo(String titulo) {
+        System.out.println("Resultados para el titulo '" + titulo + "':");
+        buscarPorTituloRec(arbolLibros.getRoot(), titulo);
+    }
     // Muestra todos los libros guardados sin distincion
     public void mostrarTodosLosLibros() {
         arbolLibros.inorden();
