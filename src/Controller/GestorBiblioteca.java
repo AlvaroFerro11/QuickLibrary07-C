@@ -112,6 +112,16 @@ public class GestorBiblioteca {
         System.out.println("Resultados para el titulo '" + titulo + "':");
         buscarPorTituloRec(arbolLibros.getRoot(), titulo);
     }
+    private void buscarPorTituloRec(NodoArbol<Libro> nodo, String titulo) {
+        if (nodo != null) {
+            buscarPorTituloRec(nodo.getLeft(), titulo);
+            if (nodo.getData().getTitulo().equalsIgnoreCase(titulo)) {
+                System.out.println(nodo.getData());
+            }
+            buscarPorTituloRec(nodo.getRight(), titulo);
+        }
+    }
+
     // Muestra todos los libros guardados sin distincion
     public void mostrarTodosLosLibros() {
         arbolLibros.inorden();
