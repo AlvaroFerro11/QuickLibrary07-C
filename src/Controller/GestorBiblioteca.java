@@ -283,19 +283,30 @@ public class GestorBiblioteca {
     public boolean arbolVacio() {
         return arbolLibros.estaVacio();
     }
+    // ==========================================================
+    // RF06: REPORTE BÁSICO DE TOTALES
+    // ==========================================================
 
-    // Procesa la solicitud al frente de la cola y realiza el prestamo si el libro esta disponible
+    // Cuenta los libros segun el estado de manera recursiva
+    private int contarPorEstadoRec(NodoArbol<Libro> nodo, String estado) {
+        if (nodo == null) return 0;
+        int coincide = nodo.getData().getEstado().equalsIgnoreCase(estado) ? 1 : 0;
+        return coincide + contarPorEstadoRec(nodo.getLeft(), estado) + contarPorEstadoRec(nodo.getRight(), estado);
+    }
 
-      // Muestra el reporte basico de totales de la biblioteca
+    // Muestra el reporte consolidado de totales de la biblioteca
     public void generarReporteTotales() {
+        int disponibles = contarPorEstadoRec(arbolLibros.getRoot(), "DISPONIBLE");
+        int prestados = contarPorEstadoRec(arbolLibros.getRoot(), "PRESTADO");
+
         System.out.println("=============================================");
         System.out.println("      REPORTE DE TOTALES DE LA BIBLIOTECA    ");
         System.out.println("=============================================");
-
-        // Obtiene los totales desde el arbol y la cola de solicitudes
-        System.out.println("Cantidad total de libros     : " + arbolLibros.contar());
+        System.out.println("Cantidad total de libros      : " + arbolLibros.contar());
+        System.out.println("Cantidad de libros disponibles: " + disponibles);
+        System.out.println("Cantidad de libros prestados  : " + prestados);
         System.out.println("Solicitudes pendientes en cola: " + colaSolicitudes.size());
-
         System.out.println("=============================================");
     }
+
 }
