@@ -82,7 +82,28 @@ public class GestorBiblioteca {
         libroEncontrado.setAnioPublicacion(nuevoAnio);
         System.out.println("Libro modificado con exito.");
     }
+    // Filtra y muestra unicamente los libros con estado DISPONIBLE
+    public void mostrarLibrosDisponibles() {
+        System.out.println("--- LISTA DE LIBROS DISPONIBLES ---");
+        filtrarPorEstadoRec(arbolLibros.getRoot(), "DISPONIBLE");
+    }
 
+    // Filtra y muestra unicamente los libros con estado PRESTADO
+    public void mostrarLibrosPrestados() {
+        System.out.println("--- LISTA DE LIBROS PRESTADOS ---");
+        filtrarPorEstadoRec(arbolLibros.getRoot(), "PRESTADO");
+    }
+
+    // Helper recursivo para imprimir segun el estado del libro
+    private void filtrarPorEstadoRec(NodoArbol<Libro> nodo, String estadoBuscado) {
+        if (nodo != null) {
+            filtrarPorEstadoRec(nodo.getLeft(), estadoBuscado);
+            if (nodo.getData().getEstado().equalsIgnoreCase(estadoBuscado)) {
+                System.out.println(nodo.getData());
+            }
+            filtrarPorEstadoRec(nodo.getRight(), estadoBuscado);
+        }
+    }
     // Muestra todos los libros guardados sin distincion
     public void mostrarTodosLosLibros() {
         arbolLibros.inorden();
