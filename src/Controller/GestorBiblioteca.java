@@ -286,21 +286,7 @@ public class GestorBiblioteca {
 
     // Procesa la solicitud al frente de la cola y realiza el prestamo si el libro esta disponible
 
-    // Registra la devolucion de un libro cambiando su estado a disponible
-        // Crea un objeto libro auxiliar para buscarlo en el arbol por su codigo
-        Libro libroAuxiliar = new Libro(codigoLibro);
-        Libro libroEncontrado = arbolLibros.buscar(libroAuxiliar);
-        // Verifica si el libro existe en el arbol
-        if (libroEncontrado == null) {
-            System.out.println("Error: El libro con codigo " + codigoLibro + " no existe.");
-            return;
-        }
-        // Cambia el estado del libro a disponible usando texto
-        libroEncontrado.setEstado("DISPONIBLE");
-        System.out.println("Confirmacion: El libro ahora esta Disponible.");
-    }
-
-    // Muestra el reporte basico de totales de la biblioteca
+      // Muestra el reporte basico de totales de la biblioteca
     public void generarReporteTotales() {
         System.out.println("=============================================");
         System.out.println("      REPORTE DE TOTALES DE LA BIBLIOTECA    ");
