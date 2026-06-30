@@ -51,6 +51,10 @@ public class GestorBiblioteca {
     }
     // Inserta un nuevo libro en el arbol binario de busqueda
     public void registrarLibro(Libro libro) {
+        if (!validarDatosLibro(libro)) {
+            System.out.println("Registro rechazado");
+            return;
+        }
         arbolLibros.insertar(libro);
     }
     // Busca un libro en el arbol binario de busqueda
