@@ -3,16 +3,17 @@ package View;
 import Controller.GestorBiblioteca;
 import Model.Solicitud;
 import estructuras_auxiliares.Libro;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class VentanaBiblioteca extends JFrame {
 
@@ -135,6 +136,7 @@ public class VentanaBiblioteca extends JFrame {
         JPanel panelBuscar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelBuscar.add(new JLabel("Código a buscar:"));
         panelBuscar.add(txtCodigoBuscar);
+
         JButton btnBuscar = new JButton("Buscar");
         btnBuscar.addActionListener(e -> buscarLibro());
         panelBuscar.add(btnBuscar);
@@ -142,6 +144,7 @@ public class VentanaBiblioteca extends JFrame {
         JPanel panelEliminar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelEliminar.add(new JLabel("Código a eliminar:"));
         panelEliminar.add(txtCodigoEliminar);
+
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.addActionListener(e -> eliminarLibro());
         panelEliminar.add(btnEliminar);
@@ -173,24 +176,32 @@ public class VentanaBiblioteca extends JFrame {
 
         JPanel panelSolicitud = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelSolicitud.setBorder(BorderFactory.createTitledBorder("Registrar solicitud de préstamo"));
+
         txtCodigoSolicitud = new JTextField(10);
+
         JButton btnRegistrarSolicitud = new JButton("Registrar solicitud");
         btnRegistrarSolicitud.addActionListener(e -> registrarSolicitud());
+
         panelSolicitud.add(new JLabel("Código del libro:"));
         panelSolicitud.add(txtCodigoSolicitud);
         panelSolicitud.add(btnRegistrarSolicitud);
 
         JPanel panelAtencion = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelAtencion.setBorder(BorderFactory.createTitledBorder("Atender solicitudes"));
+
         JButton btnAtender = new JButton("Atender siguiente solicitud");
         btnAtender.addActionListener(e -> atenderSolicitud());
+
         panelAtencion.add(btnAtender);
 
         JPanel panelDevolucion = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelDevolucion.setBorder(BorderFactory.createTitledBorder("Registrar devolución"));
+
         txtCodigoDevolucion = new JTextField(10);
+
         JButton btnDevolucion = new JButton("Registrar devolución");
         btnDevolucion.addActionListener(e -> registrarDevolucion());
+
         panelDevolucion.add(new JLabel("Código del libro:"));
         panelDevolucion.add(txtCodigoDevolucion);
         panelDevolucion.add(btnDevolucion);
@@ -203,23 +214,85 @@ public class VentanaBiblioteca extends JFrame {
     }
 
     private JPanel crearPanelReportes() {
-        JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
-        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JPanel panel = new JPanel(new BorderLayout(15, 15));
+        panel.setBorder(new EmptyBorder(18, 18, 18, 18));
 
-        JButton btnReporte = new JButton("Generar reporte de totales");
-        btnReporte.addActionListener(e -> generarReporte());
+        JPanel encabezado = new JPanel(new BorderLayout());
 
-        JButton btnPrueba = new JButton("Ejecutar prueba funcional integrada");
-        btnPrueba.addActionListener(e -> ejecutarPruebaFuncionalIntegrada());
+        JLabel titulo = new JLabel("Reportes y prueba funcional");
+        titulo.setFont(new Font("Arial", Font.BOLD, 22));
 
-        JButton btnLimpiarSalida = new JButton("Limpiar resultados");
-        btnLimpiarSalida.addActionListener(e -> areaResultados.setText(""));
+        JLabel descripcion = new JLabel("Genera reportes en PDF, visualiza totales y ejecuta una prueba completa del sistema.");
+        descripcion.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        panel.add(btnReporte);
-        panel.add(btnPrueba);
-        panel.add(btnLimpiarSalida);
+        encabezado.add(titulo, BorderLayout.NORTH);
+        encabezado.add(descripcion, BorderLayout.CENTER);
+
+        JPanel contenedorBotones = new JPanel(new GridLayout(2, 2, 15, 15));
+        contenedorBotones.setBorder(BorderFactory.createTitledBorder("Opciones disponibles"));
+
+        JButton btnReportePDF = crearBotonReporte(
+                "Generar reporte PDF",
+                "Exporta los totales de la biblioteca",
+                new Color(41, 128, 185),
+                () -> generarReportePDF()
+        );
+
+        JButton btnVerReporte = crearBotonReporte(
+                "Ver reporte en pantalla",
+                "Muestra los totales en el área de resultados",
+                new Color(39, 174, 96),
+                () -> generarReporte()
+        );
+
+        JButton btnPrueba = crearBotonReporte(
+                "Prueba funcional integrada",
+                "Ejecuta carga, préstamo, devolución y reporte",
+                new Color(142, 68, 173),
+                () -> ejecutarPruebaFuncionalIntegrada()
+        );
+
+        JButton btnLimpiarSalida = crearBotonReporte(
+                "Limpiar resultados",
+                "Borra el contenido del panel inferior",
+                new Color(127, 140, 141),
+                () -> areaResultados.setText("")
+        );
+
+        contenedorBotones.add(btnReportePDF);
+        contenedorBotones.add(btnVerReporte);
+        contenedorBotones.add(btnPrueba);
+        contenedorBotones.add(btnLimpiarSalida);
+
+        JTextArea nota = new JTextArea(
+                "Nota: el reporte PDF se guarda en la ubicación que selecciones. " +
+                        "El contenido del PDF se obtiene directamente del método generarReporteTotales() del GestorBiblioteca."
+        );
+        nota.setEditable(false);
+        nota.setLineWrap(true);
+        nota.setWrapStyleWord(true);
+        nota.setOpaque(false);
+        nota.setFont(new Font("Arial", Font.ITALIC, 13));
+
+        panel.add(encabezado, BorderLayout.NORTH);
+        panel.add(contenedorBotones, BorderLayout.CENTER);
+        panel.add(nota, BorderLayout.SOUTH);
 
         return panel;
+    }
+
+    private JButton crearBotonReporte(String titulo, String descripcion, Color color, Runnable accion) {
+        JButton boton = new JButton("<html><center><b>" + titulo + "</b><br>" + descripcion + "</center></html>");
+        boton.setFont(new Font("Arial", Font.PLAIN, 14));
+        boton.setForeground(Color.WHITE);
+        boton.setBackground(color);
+        boton.setFocusPainted(false);
+        boton.setOpaque(true);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        boton.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        boton.addActionListener(e -> accion.run());
+
+        return boton;
     }
 
     private JPanel crearPanelManual() {
@@ -274,6 +347,7 @@ public class VentanaBiblioteca extends JFrame {
             String estado = cboEstado.getSelectedItem().toString();
 
             Libro libroExistente = gestor.buscarLibro(new Libro(codigo));
+
             if (libroExistente != null) {
                 mostrarMensajeError("Ya existe un libro registrado con ese código.");
                 return;
@@ -293,6 +367,7 @@ public class VentanaBiblioteca extends JFrame {
     private void buscarLibro() {
         try {
             int codigo = leerEnteroPositivo(txtCodigoBuscar.getText(), "código de búsqueda");
+
             Libro libroEncontrado = gestor.buscarLibro(new Libro(codigo));
 
             if (libroEncontrado == null) {
@@ -309,6 +384,7 @@ public class VentanaBiblioteca extends JFrame {
     private void eliminarLibro() {
         try {
             int codigo = leerEnteroPositivo(txtCodigoEliminar.getText(), "código de eliminación");
+
             Libro libroEncontrado = gestor.buscarLibro(new Libro(codigo));
 
             if (libroEncontrado == null) {
@@ -343,12 +419,14 @@ public class VentanaBiblioteca extends JFrame {
         }
 
         String salida = capturarSalida(() -> gestor.mostrarLibros());
+
         mostrarResultado("LISTA DE LIBROS\n" + separador() + salida);
     }
 
     private void registrarSolicitud() {
         try {
             int codigo = leerEnteroPositivo(txtCodigoSolicitud.getText(), "código del libro solicitado");
+
             Libro libroEncontrado = gestor.buscarLibro(new Libro(codigo));
 
             if (libroEncontrado == null) {
@@ -359,7 +437,7 @@ public class VentanaBiblioteca extends JFrame {
             Solicitud solicitud = crearSolicitud(codigo);
             gestor.registrarSolicitud(solicitud);
 
-            mostrarResultado("Solicitud registrada correctamente en la cola.\nLibro solicitado: " + libroEncontrado);
+            mostrarResultado("Solicitud registrada correctamente en la cola.\nLibro solicitado:\n" + libroEncontrado);
             txtCodigoSolicitud.setText("");
 
         } catch (IllegalArgumentException e) {
@@ -369,13 +447,16 @@ public class VentanaBiblioteca extends JFrame {
 
     private void atenderSolicitud() {
         String salida = capturarSalida(() -> gestor.atenderSiguienteSolicitud());
+
         mostrarResultado("ATENCIÓN DE SOLICITUD\n" + separador() + salida);
     }
 
     private void registrarDevolucion() {
         try {
             int codigo = leerEnteroPositivo(txtCodigoDevolucion.getText(), "código del libro devuelto");
+
             String salida = capturarSalida(() -> gestor.registrarDevolucion(codigo));
+
             mostrarResultado("DEVOLUCIÓN DE LIBRO\n" + separador() + salida);
             txtCodigoDevolucion.setText("");
 
@@ -385,16 +466,111 @@ public class VentanaBiblioteca extends JFrame {
     }
 
     private void generarReporte() {
-        String salida = capturarSalida(() -> gestor.generarReporteTotales());
-        mostrarResultado(salida);
+        mostrarResultado(construirReporteTotales());
+    }
+
+    private String construirReporteTotales() {
+        String salida = capturarSalida(() -> gestor.generarReporteTotales()).trim();
+
+        String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
+        StringBuilder reporte = new StringBuilder();
+
+        reporte.append("REPORTE DE TOTALES - SISTEMA DE BIBLIOTECA\n");
+        reporte.append(separador());
+        reporte.append("Fecha de generación: ").append(fecha).append("\n\n");
+
+        if (salida.isEmpty()) {
+            reporte.append("No se obtuvo información del reporte.\n");
+        } else {
+            reporte.append(salida).append("\n");
+        }
+
+        return reporte.toString();
+    }
+
+    private void generarReportePDF() {
+        String reporte = construirReporteTotales();
+
+        JFileChooser selector = new JFileChooser();
+        selector.setDialogTitle("Guardar reporte de totales");
+        selector.setSelectedFile(new File("reporte_totales_biblioteca.pdf"));
+        selector.setFileFilter(new FileNameExtensionFilter("Archivo PDF (*.pdf)", "pdf"));
+
+        int opcion = selector.showSaveDialog(this);
+
+        if (opcion != JFileChooser.APPROVE_OPTION) {
+            mostrarResultado("Generación de reporte PDF cancelada por el usuario.");
+            return;
+        }
+
+        File archivo = selector.getSelectedFile();
+
+        if (!archivo.getName().toLowerCase().endsWith(".pdf")) {
+            File carpeta = archivo.getParentFile();
+            archivo = new File(carpeta, archivo.getName() + ".pdf");
+        }
+
+        try {
+            GeneradorPDF.crearReporteTexto("Reporte de Totales", reporte, archivo);
+
+            mostrarResultado(
+                    "Reporte PDF generado correctamente.\n" +
+                            "Ubicación:\n" +
+                            archivo.getAbsolutePath() +
+                            "\n\n" +
+                            reporte
+            );
+
+            int abrir = JOptionPane.showConfirmDialog(
+                    this,
+                    "El reporte PDF se generó correctamente.\n¿Deseas abrirlo ahora?",
+                    "Reporte generado",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            if (abrir == JOptionPane.YES_OPTION && Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(archivo);
+            }
+
+        } catch (IOException e) {
+            mostrarMensajeError("No se pudo generar el PDF: " + e.getMessage());
+        }
     }
 
     private void cargarDatosDePrueba() {
-        registrarLibroSiNoExiste(new Libro(101, "Programación en Java", "Herbert Schildt", "Programación", 2022, "DISPONIBLE"));
-        registrarLibroSiNoExiste(new Libro(102, "Estructuras de Datos", "Mark Allen Weiss", "Computación", 2021, "DISPONIBLE"));
-        registrarLibroSiNoExiste(new Libro(103, "Introducción a los Algoritmos", "Thomas Cormen", "Algoritmos", 2020, "DISPONIBLE"));
+        registrarLibroSiNoExiste(new Libro(
+                101,
+                "Programación en Java",
+                "Herbert Schildt",
+                "Programación",
+                2022,
+                "DISPONIBLE"
+        ));
 
-        mostrarResultado("Datos de prueba cargados correctamente.\nSe agregaron libros base con códigos 101, 102 y 103.");
+        registrarLibroSiNoExiste(new Libro(
+                102,
+                "Estructuras de Datos",
+                "Mark Allen Weiss",
+                "Computación",
+                2021,
+                "DISPONIBLE"
+        ));
+
+        registrarLibroSiNoExiste(new Libro(
+                103,
+                "Introducción a los Algoritmos",
+                "Thomas Cormen",
+                "Algoritmos",
+                2020,
+                "DISPONIBLE"
+        ));
+
+        mostrarResultado(
+                "Datos de prueba cargados correctamente.\n" +
+                        "Se agregaron libros base con códigos 101, 102 y 103."
+        );
     }
 
     private void registrarLibroSiNoExiste(Libro libro) {
@@ -405,13 +581,39 @@ public class VentanaBiblioteca extends JFrame {
 
     private void ejecutarPruebaFuncionalIntegrada() {
         StringBuilder resultado = new StringBuilder();
+
         resultado.append("PRUEBA FUNCIONAL INTEGRADA\n");
         resultado.append(separador());
 
         resultado.append("Paso 1: Cargar datos de prueba.\n");
-        registrarLibroSiNoExiste(new Libro(101, "Programación en Java", "Herbert Schildt", "Programación", 2022, "DISPONIBLE"));
-        registrarLibroSiNoExiste(new Libro(102, "Estructuras de Datos", "Mark Allen Weiss", "Computación", 2021, "DISPONIBLE"));
-        registrarLibroSiNoExiste(new Libro(103, "Introducción a los Algoritmos", "Thomas Cormen", "Algoritmos", 2020, "DISPONIBLE"));
+
+        registrarLibroSiNoExiste(new Libro(
+                101,
+                "Programación en Java",
+                "Herbert Schildt",
+                "Programación",
+                2022,
+                "DISPONIBLE"
+        ));
+
+        registrarLibroSiNoExiste(new Libro(
+                102,
+                "Estructuras de Datos",
+                "Mark Allen Weiss",
+                "Computación",
+                2021,
+                "DISPONIBLE"
+        ));
+
+        registrarLibroSiNoExiste(new Libro(
+                103,
+                "Introducción a los Algoritmos",
+                "Thomas Cormen",
+                "Algoritmos",
+                2020,
+                "DISPONIBLE"
+        ));
+
         resultado.append("Datos cargados correctamente.\n\n");
 
         resultado.append("Paso 2: Mostrar libros registrados.\n");
@@ -425,22 +627,36 @@ public class VentanaBiblioteca extends JFrame {
         resultado.append(capturarSalida(() -> gestor.atenderSiguienteSolicitud())).append("\n");
 
         resultado.append("Paso 5: Verificar estado del libro 101.\n");
+
         Libro libroPrestado = gestor.buscarLibro(new Libro(101));
-        resultado.append(libroPrestado != null ? libroPrestado : "No se encontró el libro 101.").append("\n\n");
+
+        if (libroPrestado != null) {
+            resultado.append(libroPrestado).append("\n\n");
+        } else {
+            resultado.append("No se encontró el libro 101.\n\n");
+        }
 
         resultado.append("Paso 6: Registrar devolución del libro 101.\n");
         resultado.append(capturarSalida(() -> gestor.registrarDevolucion(101))).append("\n");
 
         resultado.append("Paso 7: Verificar estado final del libro 101.\n");
+
         Libro libroDevuelto = gestor.buscarLibro(new Libro(101));
-        resultado.append(libroDevuelto != null ? libroDevuelto : "No se encontró el libro 101.").append("\n\n");
+
+        if (libroDevuelto != null) {
+            resultado.append(libroDevuelto).append("\n\n");
+        } else {
+            resultado.append("No se encontró el libro 101.\n\n");
+        }
 
         resultado.append("Paso 8: Generar reporte final.\n");
         resultado.append(capturarSalida(() -> gestor.generarReporteTotales())).append("\n");
 
         resultado.append("Resultado: La prueba funcional integrada finalizó correctamente.");
+
         mostrarResultado(resultado.toString());
     }
+
     private Solicitud crearSolicitud(final int codigoLibro) {
         return new Solicitud() {
             @Override
@@ -464,7 +680,9 @@ public class VentanaBiblioteca extends JFrame {
         int numero = convertirEntero(texto, nombreCampo);
 
         if (numero < minimo || numero > maximo) {
-            throw new IllegalArgumentException("El campo " + nombreCampo + " debe estar entre " + minimo + " y " + maximo + ".");
+            throw new IllegalArgumentException(
+                    "El campo " + nombreCampo + " debe estar entre " + minimo + " y " + maximo + "."
+            );
         }
 
         return numero;
@@ -522,7 +740,12 @@ public class VentanaBiblioteca extends JFrame {
     }
 
     private void mostrarMensajeError(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "Validación", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(
+                this,
+                mensaje,
+                "Validación",
+                JOptionPane.WARNING_MESSAGE
+        );
     }
 
     private void mostrarManualEnResultados() {
@@ -534,21 +757,32 @@ public class VentanaBiblioteca extends JFrame {
                 separador() +
                 "1. Registrar libro:\n" +
                 "   Permite ingresar código, título, autor, categoría, año y estado.\n\n" +
+
                 "2. Buscar libro:\n" +
                 "   Permite consultar un libro mediante su código.\n\n" +
+
                 "3. Eliminar libro:\n" +
                 "   Permite eliminar un libro existente luego de confirmar la operación.\n\n" +
+
                 "4. Mostrar libros:\n" +
                 "   Muestra todos los libros almacenados en el árbol binario de búsqueda.\n\n" +
+
                 "5. Registrar solicitud de préstamo:\n" +
                 "   Agrega una solicitud a la cola, siempre que el libro exista.\n\n" +
+
                 "6. Atender solicitud:\n" +
                 "   Procesa la primera solicitud pendiente y cambia el estado del libro a PRESTADO.\n\n" +
+
                 "7. Registrar devolución:\n" +
                 "   Cambia el estado del libro a DISPONIBLE.\n\n" +
+
                 "8. Generar reporte:\n" +
                 "   Muestra el total de libros y las solicitudes pendientes.\n\n" +
-                "9. Prueba funcional integrada:\n" +
+
+                "9. Generar reporte PDF:\n" +
+                "   Exporta el reporte de totales en un archivo PDF.\n\n" +
+
+                "10. Prueba funcional integrada:\n" +
                 "   Ejecuta un flujo completo: carga libros, registra solicitud, atiende préstamo, devuelve libro y genera reporte.\n";
     }
 
