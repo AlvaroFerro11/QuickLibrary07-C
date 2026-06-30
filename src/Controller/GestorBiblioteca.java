@@ -5,15 +5,19 @@ import Model.Libro;
 import estructuras_auxiliares.QueueLink;
 import Model.Solicitud;
 import estructuras_auxiliares.NodoArbol;
+import Exceptions.ExceptionIsEmpty; // Import necesario para manejar las excepciones de la cola
+
 public class GestorBiblioteca {
     // Estructuras de datos para almacenar libros y solicitudes
     private ArbolBinarioBusqueda<Libro> arbolLibros;
     private QueueLink<Solicitud> colaSolicitudes;
+
     // Constructor para inicializar el arbol y la cola
     public GestorBiblioteca() {
         this.arbolLibros = new ArbolBinarioBusqueda<>();
         this.colaSolicitudes = new QueueLink<>();
     }
+
     // Lógica interna para validar los datos de un libro
     private boolean validarDatosLibro(Libro libro) {
         if (libro == null) return false;
@@ -44,12 +48,7 @@ public class GestorBiblioteca {
         }
         return true;
     }
-    public void registrarSolicitud(Solicitud solicitud) {
-        if (solicitud == null) {
-            return;
-        }
-        colaSolicitudes.enqueue(solicitud);
-    }
+
     // Inserta un nuevo libro en el arbol binario de busqueda
     public void registrarLibro(Libro libro) {
         if (!validarDatosLibro(libro)) {
@@ -58,6 +57,7 @@ public class GestorBiblioteca {
         }
         arbolLibros.insertar(libro);
     }
+
     // Modifica los datos de un libro existente en el arbol
     public void modificarLibro(int codigo, String nuevoTitulo, String nuevoAutor, String nuevaCategoria, int nuevoAnio) {
         Libro auxiliar = new Libro(codigo);
@@ -82,6 +82,7 @@ public class GestorBiblioteca {
         libroEncontrado.setAnioPublicacion(nuevoAnio);
         System.out.println("Libro modificado con exito.");
     }
+
     // Filtra y muestra unicamente los libros con estado DISPONIBLE
     public void mostrarLibrosDisponibles() {
         System.out.println("--- LISTA DE LIBROS DISPONIBLES ---");
@@ -104,14 +105,21 @@ public class GestorBiblioteca {
             filtrarPorEstadoRec(nodo.getRight(), estadoBuscado);
         }
     }
+
+    // ==========================================================
+    // RF02: BÚSQUEDAS DE LIBROS
+    // ==========================================================
+
     public Libro buscarLibroPorCodigo(int codigo) {
         Libro auxiliar = new Libro(codigo);
         return arbolLibros.buscar(auxiliar);
     }
+
     public void buscarPorTitulo(String titulo) {
         System.out.println("Resultados para el titulo '" + titulo + "':");
         buscarPorTituloRec(arbolLibros.getRoot(), titulo);
     }
+
     private void buscarPorTituloRec(NodoArbol<Libro> nodo, String titulo) {
         if (nodo != null) {
             buscarPorTituloRec(nodo.getLeft(), titulo);
@@ -121,10 +129,12 @@ public class GestorBiblioteca {
             buscarPorTituloRec(nodo.getRight(), titulo);
         }
     }
+
     public void buscarPorAutor(String autor) {
         System.out.println("Resultados para el autor '" + autor + "':");
         buscarPorAutorRec(arbolLibros.getRoot(), autor);
     }
+
     private void buscarPorAutorRec(NodoArbol<Libro> nodo, String autor) {
         if (nodo != null) {
             buscarPorAutorRec(nodo.getLeft(), autor);
@@ -134,6 +144,7 @@ public class GestorBiblioteca {
             buscarPorAutorRec(nodo.getRight(), autor);
         }
     }
+
     public void buscarPorCategoria(String categoria) {
         System.out.println("Resultados para la categoria '" + categoria + "':");
         buscarPorCategoriaRec(arbolLibros.getRoot(), categoria);
@@ -153,32 +164,87 @@ public class GestorBiblioteca {
     public void mostrarTodosLosLibros() {
         arbolLibros.inorden();
     }
+
+    // ==========================================================
+    // RF03: GESTIÓN DE COLA DE SOLICITUDES (BLOQUE INTEGRADO AQUÍ)
+    // ==========================================================
+
+    // Registra una nueva solicitud al final de la cola
+    public void registrarSolicitud(Solicitud solicitud) {
+        if (solicitud == null) return;
+        colaSolicitudes.enqueue(solicitud);
+    }
+
+    // Muestra la proxima solicitud a procesarse sin eliminarla
+    public void consultarSiguienteSolicitud() {
+        try {
+            if (colaSolicitudes.isEmpty()) {
+                System.out.println("No hay solicitudes pendientes en la cola.");
+                return;
+            }
+            Solicitud siguiente = colaSolicitudes.peek();
+            System.out.println("=============================================");
+            System.out.println("         PROXIMA SOLICITUD EN COLA           ");
+            System.out.println("=============================================");
+            System.out.println("Nombre Estudiante: " + siguiente.getNomEst());
+            System.out.println("Codigo Estudiante: " + siguiente.getCodEst());
+            System.out.println("Codigo Libro Solic: " + siguiente.getCodigoLibro());
+            System.out.println("Fecha de Solicitud: " + siguiente.getFechaSolicitud());
+            System.out.println("=============================================");
+        } catch (ExceptionIsEmpty e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    // Saca de la cola la solicitud actual
+    public void eliminarSolicitudAtendida() {
+        try {
+            if (colaSolicitudes.isEmpty()) {
+                System.out.println("Error: No existen solicitudes para remover.");
+                return;
+            }
+            colaSolicitudes.dequeue();
+            System.out.println("Solicitud removida de la cola con éxito.");
+        } catch (ExceptionIsEmpty e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    // ==========================================================
+    // OTROS MÉTODOS DEL SISTEMA
+    // ==========================================================
+
     // Busca un libro en el arbol binario de busqueda
     public Libro buscarLibro(Libro libro) {
         return arbolLibros.buscar(libro);
     }
+
     // Elimina un libro del arbol binario de busqueda
     public void eliminarLibro(Libro libro) {
         arbolLibros.eliminar(libro);
     }
+
     // Muestra los libros registrados usando el recorrido inorden
     public void mostrarLibros() {
         arbolLibros.inorden();
     }
+
     // Retorna la cantidad total de libros en el arbol
     public int totalLibros() {
         return arbolLibros.contar();
     }
+
     // Verifica si el arbol de libros no contiene elementos
     public boolean arbolVacio() {
         return arbolLibros.estaVacio();
     }
+
     // Procesa la solicitud al frente de la cola y realiza el prestamo si el libro esta disponible
     public void atenderSiguienteSolicitud() {
         try {
             // Verifica si la cola de solicitudes esta vacia
             if (colaSolicitudes.isEmpty()) {
-                throw new Exceptions.ExceptionIsEmpty("Error: No hay solicitudes pendientes en la cola.");
+                throw new ExceptionIsEmpty("Error: No hay solicitudes pendientes en la cola.");
             }
             // Obtiene la solicitud al frente de la cola sin removerla
             Solicitud solicitudActual = colaSolicitudes.peek();
@@ -203,10 +269,11 @@ public class GestorBiblioteca {
             libroEncontrado.setEstado("PRESTADO");
             colaSolicitudes.dequeue();
             System.out.println("Prestamo realizado con exito.");
-        } catch (Exceptions.ExceptionIsEmpty e) {
+        } catch (ExceptionIsEmpty e) {
             System.out.println(e.getMessage());
         }
     }
+
     // Registra la devolucion de un libro cambiando su estado a disponible
     public void registrarDevolucion(int codigoLibro) {
         // Validacion de datos de entrada incorrectos
@@ -226,6 +293,7 @@ public class GestorBiblioteca {
         libroEncontrado.setEstado("DISPONIBLE");
         System.out.println("Confirmacion: El libro ahora esta Disponible.");
     }
+
     // Muestra el reporte basico de totales de la biblioteca
     public void generarReporteTotales() {
         System.out.println("=============================================");
